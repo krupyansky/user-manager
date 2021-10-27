@@ -5,26 +5,45 @@ package main;
 option go_package = "./proto";
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 service TestApi {
-  rpc Echo(ResponseRequest) returns (ResponseRequest) {
+  rpc GetUsers(google.protobuf.Empty) returns (GetUsersResponse) {
     option (google.api.http) = {
-      get: "/echo/{id}"
+      get: "/users"
     };
   }
-  rpc GetUser(UserRequest) returns (UserResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/user"
+    };
+  }
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user/{id}"
+    };
+  }
 }
 
-message ResponseRequest {
+message GetUsersResponse {
+  repeated User users = 1;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message CreateUserResponse {
   int32 id = 1;
 }
 
-message UserRequest {
-  string uuid = 1;
-}
-
-message UserResponse {
-  string name = 1;
-  int32 age = 2;
-  string email = 3;
+message DeleteUserRequest {
+  int32 id = 1;
 }

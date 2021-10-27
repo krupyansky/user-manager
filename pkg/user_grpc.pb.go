@@ -7,6 +7,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -18,8 +19,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TestApiClient interface {
-	Echo(ctx context.Context, in *ResponseRequest, opts ...grpc.CallOption) (*ResponseRequest, error)
-	GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	GetUsers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetUsersResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type testApiClient struct {
@@ -30,18 +32,27 @@ func NewTestApiClient(cc grpc.ClientConnInterface) TestApiClient {
 	return &testApiClient{cc}
 }
 
-func (c *testApiClient) Echo(ctx context.Context, in *ResponseRequest, opts ...grpc.CallOption) (*ResponseRequest, error) {
-	out := new(ResponseRequest)
-	err := c.cc.Invoke(ctx, "/main.TestApi/Echo", in, out, opts...)
+func (c *testApiClient) GetUsers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetUsersResponse, error) {
+	out := new(GetUsersResponse)
+	err := c.cc.Invoke(ctx, "/main.TestApi/GetUsers", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *testApiClient) GetUser(ctx context.Context, in *UserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, "/main.TestApi/GetUser", in, out, opts...)
+func (c *testApiClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
+	out := new(CreateUserResponse)
+	err := c.cc.Invoke(ctx, "/main.TestApi/CreateUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *testApiClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/main.TestApi/DeleteUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +63,9 @@ func (c *testApiClient) GetUser(ctx context.Context, in *UserRequest, opts ...gr
 // All implementations must embed UnimplementedTestApiServer
 // for forward compatibility
 type TestApiServer interface {
-	Echo(context.Context, *ResponseRequest) (*ResponseRequest, error)
-	GetUser(context.Context, *UserRequest) (*UserResponse, error)
+	GetUsers(context.Context, *emptypb.Empty) (*GetUsersResponse, error)
+	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedTestApiServer()
 }
 
@@ -61,11 +73,14 @@ type TestApiServer interface {
 type UnimplementedTestApiServer struct {
 }
 
-func (UnimplementedTestApiServer) Echo(context.Context, *ResponseRequest) (*ResponseRequest, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
+func (UnimplementedTestApiServer) GetUsers(context.Context, *emptypb.Empty) (*GetUsersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsers not implemented")
 }
-func (UnimplementedTestApiServer) GetUser(context.Context, *UserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+func (UnimplementedTestApiServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedTestApiServer) DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
 }
 func (UnimplementedTestApiServer) mustEmbedUnimplementedTestApiServer() {}
 
@@ -80,38 +95,56 @@ func RegisterTestApiServer(s grpc.ServiceRegistrar, srv TestApiServer) {
 	s.RegisterService(&TestApi_ServiceDesc, srv)
 }
 
-func _TestApi_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResponseRequest)
+func _TestApi_GetUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestApiServer).Echo(ctx, in)
+		return srv.(TestApiServer).GetUsers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.TestApi/Echo",
+		FullMethod: "/main.TestApi/GetUsers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestApiServer).Echo(ctx, req.(*ResponseRequest))
+		return srv.(TestApiServer).GetUsers(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TestApi_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserRequest)
+func _TestApi_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestApiServer).GetUser(ctx, in)
+		return srv.(TestApiServer).CreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/main.TestApi/GetUser",
+		FullMethod: "/main.TestApi/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestApiServer).GetUser(ctx, req.(*UserRequest))
+		return srv.(TestApiServer).CreateUser(ctx, req.(*CreateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TestApi_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestApiServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.TestApi/DeleteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestApiServer).DeleteUser(ctx, req.(*DeleteUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -124,12 +157,16 @@ var TestApi_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TestApiServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Echo",
-			Handler:    _TestApi_Echo_Handler,
+			MethodName: "GetUsers",
+			Handler:    _TestApi_GetUsers_Handler,
 		},
 		{
-			MethodName: "GetUser",
-			Handler:    _TestApi_GetUser_Handler,
+			MethodName: "CreateUser",
+			Handler:    _TestApi_CreateUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _TestApi_DeleteUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
