@@ -9,11 +9,9 @@ import (
 func (h *Handler) GetUsers(context.Context, *emptypb.Empty) (*pb.GetUsersResponse, error) {
 	var response pb.GetUsersResponse
 
-	pass := h.services.Authorization.GeneratePasswordHash("123")
-
 	var user pb.User
 	user.Id = 1
-	user.Name = pass
+	user.Name = "Slava"
 	user.Email = "mail@mail.ru"
 
 	users := append(response.Users, &user)

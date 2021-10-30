@@ -7,7 +7,8 @@ import (
 
 type Authorization interface {
 	CreateUser(user entity.User) (int, error)
-	GetUser(username, password string) (entity.User, error)
+	GetUsers() ([]entity.User, error)
+	DeleteUser(userId int) error
 }
 
 type Repository struct {
