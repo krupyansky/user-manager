@@ -2,27 +2,14 @@ syntax = "proto3";
 
 package main;
 
-option go_package = "./proto";
+option go_package = "./pkg";
 
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-service TestApi {
-  rpc GetUsers(google.protobuf.Empty) returns (GetUsersResponse) {
-    option (google.api.http) = {
-      get: "/users"
-    };
-  }
-  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
-    option (google.api.http) = {
-      post: "/user"
-    };
-  }
-  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = {
-      delete: "/user/{id}"
-    };
-  }
+service UserApi {
+  rpc GetUsers(google.protobuf.Empty) returns (GetUsersResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {}
 }
 
 message GetUsersResponse {
