@@ -4,9 +4,12 @@ import (
 	"context"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/krupyansky/user-manager/internal/dto"
+	"github.com/krupyansky/user-manager/internal/queue"
 	pb "github.com/krupyansky/user-manager/pkg"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"log"
+	"strconv"
 )
 
 func (h *Handler) GetUsers(_ context.Context, _ *empty.Empty) (*pb.GetUsersResponse, error) {
@@ -29,13 +32,23 @@ func (h *Handler) GetUsers(_ context.Context, _ *empty.Empty) (*pb.GetUsersRespo
 	return &response, nil
 }
 
-func (h *Handler) CreateUser(_ context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+func (h *Handler) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
 	command := dto.UserProfile{
 		Name:  req.Name,
 		Email: req.Email,
 	}
 
 	id, _ := h.services.Authorization.CreateUser(command)
+
+	w := kafka.Writer{Topic: queue.Topic, Addr: kafka.TCP(queue.BrokerAddress)}
+
+	err := w.WriteMessages(ctx, kafka.Message{
+		Key:   []byte(strconv.Itoa(id)),
+		Value: []byte("this is message:" + req.Name + " " + req.Email),
+	})
+	if err != nil {
+		panic("could not write message " + err.Error())
+	}
 
 	return &pb.CreateUserResponse{Id: int32(id)}, nil
 }

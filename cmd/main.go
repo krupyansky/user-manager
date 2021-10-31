@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"github.com/joho/godotenv"
 	"github.com/krupyansky/user-manager/internal/handler"
+	"github.com/krupyansky/user-manager/internal/queue"
 	"github.com/krupyansky/user-manager/internal/repository"
 	"github.com/krupyansky/user-manager/internal/service"
 	pb "github.com/krupyansky/user-manager/pkg"
 	_ "github.com/lib/pq"
+	"github.com/segmentio/kafka-go"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -17,6 +20,13 @@ import (
 )
 
 func main() {
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", queue.Topic, 0)
+	if err != nil {
+		panic(err)
+	}
+	// close the connection because we won't be using it
+	conn.Close()
+
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initializing configs: %s", err.Error())
@@ -54,7 +64,10 @@ func main() {
 	services := service.NewService(repos, reposRedis)
 	handlers := handler.NewHandler(services)
 
-	listener, err := net.Listen("tcp", "localhost:8080")
+	consumer := queue.NewConsumer()
+	go consumer.LogCreateUser(context.Background())
+
+	listener, err := net.Listen("tcp", "localhost:8090")
 	if err != nil {
 		log.Fatal("Could not listen on port")
 	}
