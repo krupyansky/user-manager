@@ -10,5 +10,11 @@ run:
 migrate-create:
 	migrate create -ext sql -dir ./schema -seq init
 
+migrate-create-ch:
+	migrate create -ext sql -dir ./schema-ch -seq init
+
 migrate-up:
 	migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5436/postgres?sslmode=disable' up
+
+migrate-up-ch:
+	migrate -path ./schema-ch -database 'clickhouse://localhost:9000?username=default&database=default' up

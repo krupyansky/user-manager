@@ -6,6 +6,7 @@ services:
       - '2181:2181'
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
+
   kafka:
     image: 'bitnami/kafka:latest'
     ports:
@@ -18,3 +19,19 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
+
+  server:
+    image: yandex/clickhouse-server
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+      - "9009:9009"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  client:
+    image: yandex/clickhouse-client
+    command: [ '--host', 'server' ]
