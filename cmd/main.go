@@ -9,7 +9,6 @@ import (
 	"github.com/krupyansky/user-manager/internal/service"
 	pb "github.com/krupyansky/user-manager/pkg"
 	_ "github.com/lib/pq"
-	"github.com/segmentio/kafka-go"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -20,13 +19,6 @@ import (
 )
 
 func main() {
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", queue.Topic, 0)
-	if err != nil {
-		panic(err)
-	}
-	// close the connection because we won't be using it
-	conn.Close()
-
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
 		logrus.Fatalf("error initializing configs: %s", err.Error())
