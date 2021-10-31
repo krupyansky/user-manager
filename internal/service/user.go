@@ -7,11 +7,12 @@ import (
 )
 
 type AuthService struct {
-	repo repository.Authorization
+	repo      repository.User
+	repoRedis repository.UsersRedis
 }
 
-func NewAuthService(repo repository.Authorization) *AuthService {
-	return &AuthService{repo: repo}
+func NewAuthService(repo repository.User, repoRedis repository.UsersRedis) *AuthService {
+	return &AuthService{repo: repo, repoRedis: repoRedis}
 }
 
 func (s *AuthService) CreateUser(userProfile dto.UserProfile) (int, error) {
@@ -23,5 +24,17 @@ func (s *AuthService) DeleteUser(userId dto.UserId) error {
 }
 
 func (s *AuthService) GetUsers() ([]entity.User, error) {
-	return s.repo.GetUsers()
+	users := s.repoRedis.GetUsers()
+	if users != nil {
+		return users, nil
+	}
+
+	users, err := s.repo.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	s.repoRedis.SaveUsers(users)
+
+	return users, nil
 }

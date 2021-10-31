@@ -13,6 +13,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -37,8 +38,20 @@ func main() {
 		log.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
+	dbCount, _ := strconv.Atoi(viper.GetString("redis.dbcount"))
+	client, err := repository.NewRedisDB(repository.ConfigRedis{
+		Host:     viper.GetString("redis.host"),
+		Port:     viper.GetString("redis.port"),
+		Password: "",
+		DB:       dbCount,
+	})
+	if err != nil {
+		log.Fatalf("failed to initialize db: %s", err.Error())
+	}
+
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
+	reposRedis := repository.NewRepositoryRedis(client)
+	services := service.NewService(repos, reposRedis)
 	handlers := handler.NewHandler(services)
 
 	listener, err := net.Listen("tcp", "localhost:8080")

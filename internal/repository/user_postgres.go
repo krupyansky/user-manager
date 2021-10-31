@@ -7,15 +7,15 @@ import (
 	"github.com/krupyansky/user-manager/internal/entity"
 )
 
-type AuthPostgres struct {
+type UserPostgres struct {
 	db *sqlx.DB
 }
 
-func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
-	return &AuthPostgres{db: db}
+func NewUserPostgres(db *sqlx.DB) *UserPostgres {
+	return &UserPostgres{db: db}
 }
 
-func (r *AuthPostgres) CreateUser(userProfile dto.UserProfile) (int, error) {
+func (r *UserPostgres) CreateUser(userProfile dto.UserProfile) (int, error) {
 	var id int
 
 	query := fmt.Sprintf("INSERT INTO %s (name, email) VALUES ($1, $2) RETURNING id", usersTable)
@@ -27,7 +27,7 @@ func (r *AuthPostgres) CreateUser(userProfile dto.UserProfile) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUsers() ([]entity.User, error) {
+func (r *UserPostgres) GetUsers() ([]entity.User, error) {
 	var users []entity.User
 
 	query := fmt.Sprintf("SELECT u.id, u.name, u.email FROM %s u", usersTable)
@@ -36,7 +36,7 @@ func (r *AuthPostgres) GetUsers() ([]entity.User, error) {
 	return users, err
 }
 
-func (r *AuthPostgres) DeleteUser(userId dto.UserId) error {
+func (r *UserPostgres) DeleteUser(userId dto.UserId) error {
 	query := fmt.Sprintf("DELETE FROM %s u WHERE u.id = $1", usersTable)
 	_, err := r.db.Exec(query, userId.Id)
 
