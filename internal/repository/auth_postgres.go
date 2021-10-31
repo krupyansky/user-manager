@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/krupyansky/user-manager/internal/dto"
 	"github.com/krupyansky/user-manager/internal/entity"
 )
 
@@ -14,11 +15,11 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
-func (r *AuthPostgres) CreateUser(user entity.User) (int, error) {
+func (r *AuthPostgres) CreateUser(userProfile dto.UserProfile) (int, error) {
 	var id int
 
-	query := fmt.Sprintf("INSERT INTO %s (name, username) VALUES ($1, $2, $3) RETURNING id", usersTable)
-	row := r.db.QueryRow(query, user.Name, user.Email)
+	query := fmt.Sprintf("INSERT INTO %s (name, email) VALUES ($1, $2) RETURNING id", usersTable)
+	row := r.db.QueryRow(query, userProfile.Name, userProfile.Email)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}

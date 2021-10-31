@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/krupyansky/user-manager/internal/entity"
+	"github.com/krupyansky/user-manager/internal/dto"
 	"github.com/krupyansky/user-manager/internal/repository"
 )
 
@@ -13,6 +13,6 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) CreateUser(user entity.User) (int, error) {
-	return s.repo.CreateUser(user)
+func (s *AuthService) CreateUser(userProfile dto.UserProfile) (int, error) {
+	return s.repo.CreateUser(userProfile)
 }

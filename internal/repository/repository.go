@@ -2,11 +2,12 @@ package repository
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/krupyansky/user-manager/internal/dto"
 	"github.com/krupyansky/user-manager/internal/entity"
 )
 
 type Authorization interface {
-	CreateUser(user entity.User) (int, error)
+	CreateUser(userProfile dto.UserProfile) (int, error)
 	GetUsers() ([]entity.User, error)
 	DeleteUser(userId int) error
 }
