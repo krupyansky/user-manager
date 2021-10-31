@@ -16,7 +16,7 @@ func main() {
 
 	client := pb.NewUserApiClient(conn)
 
-	resp, err := client.CreateUser(context.Background(), &pb.CreateUserRequest{Name: "Slava", Email: "mail87658@mail.ru"})
+	resp, err := client.CreateUser(context.Background(), &pb.CreateUserRequest{Name: "Blydina", Email: "fixin@mail.ru"})
 	if err != nil {
 		return
 	}

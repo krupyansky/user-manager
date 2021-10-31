@@ -2,8 +2,8 @@ package queue
 
 import (
 	"context"
-	"fmt"
 	"github.com/segmentio/kafka-go"
+	"log"
 )
 
 func (c *Consumer) LogCreateUser(ctx context.Context) {
@@ -15,6 +15,9 @@ func (c *Consumer) LogCreateUser(ctx context.Context) {
 
 	for {
 		msg, _ := reader.ReadMessage(ctx)
-		fmt.Println("!received: ", string(msg.Value))
+		err := c.repoClickHouse.SaveCreatedUserLog(string(msg.Value))
+		if err != nil {
+			log.Fatalf("save created user log err: %s", err)
+		}
 	}
 }

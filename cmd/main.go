@@ -51,12 +51,21 @@ func main() {
 		log.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
+	con, err := repository.NewClickHouseDB(repository.ConfigClickHouse{
+		Host: viper.GetString("clickHouse.host"),
+		Port: viper.GetString("clickHouse.port"),
+	})
+	if err != nil {
+		log.Fatalf("failed to initialize click house db: %s", err.Error())
+	}
+
 	repos := repository.NewRepository(db)
 	reposRedis := repository.NewRepositoryRedis(client)
 	services := service.NewService(repos, reposRedis)
 	handlers := handler.NewHandler(services)
 
-	consumer := queue.NewConsumer()
+	reposClickHouse := repository.NewRepositoryClickHouse(con)
+	consumer := queue.NewConsumer(reposClickHouse)
 	go consumer.LogCreateUser(context.Background())
 
 	listener, err := net.Listen("tcp", "localhost:8090")

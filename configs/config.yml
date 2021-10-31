@@ -11,3 +11,7 @@ redis:
   host: "localhost"
   port: "6377"
   dbcount: "0"
+
+clickHouse:
+  host: "localhost"
+  port: "8123"
