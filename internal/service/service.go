@@ -7,6 +7,7 @@ import (
 
 type Authorization interface {
 	CreateUser(userProfile dto.UserProfile) (int, error)
+	DeleteUser(userId dto.UserId) error
 }
 
 type Service struct {

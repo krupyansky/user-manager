@@ -9,7 +9,7 @@ import (
 type Authorization interface {
 	CreateUser(userProfile dto.UserProfile) (int, error)
 	GetUsers() ([]entity.User, error)
-	DeleteUser(userId int) error
+	DeleteUser(userId dto.UserId) error
 }
 
 type Repository struct {

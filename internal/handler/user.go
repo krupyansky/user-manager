@@ -2,12 +2,14 @@ package handler
 
 import (
 	"context"
+	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/krupyansky/user-manager/internal/dto"
 	pb "github.com/krupyansky/user-manager/pkg"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"log"
 )
 
-func (h *Handler) GetUsers(ctx context.Context, req *emptypb.Empty) (*pb.GetUsersResponse, error) {
+func (h *Handler) GetUsers(ctx context.Context, req *empty.Empty) (*pb.GetUsersResponse, error) {
 	var response pb.GetUsersResponse
 
 	var user pb.User
@@ -33,6 +35,13 @@ func (h *Handler) CreateUser(_ context.Context, req *pb.CreateUserRequest) (*pb.
 	return &pb.CreateUserResponse{Id: int32(id)}, nil
 }
 
-func (h *Handler) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*emptypb.Empty, error) {
-	return nil, nil
+func (h *Handler) DeleteUser(_ context.Context, req *pb.DeleteUserRequest) (*empty.Empty, error) {
+	command := dto.UserId{Id: int(req.Id)}
+
+	err := h.services.Authorization.DeleteUser(command)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return new(emptypb.Empty), nil
 }

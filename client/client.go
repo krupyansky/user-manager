@@ -16,11 +16,19 @@ func main() {
 
 	client := pb.NewUserApiClient(conn)
 
-	resp, err := client.CreateUser(context.Background(), &pb.CreateUserRequest{Name: "Slava", Email: "mail2@mail.ru"})
+	//resp, err := client.CreateUser(context.Background(), &pb.CreateUserRequest{Name: "Slava", Email: "mail4@mail.ru"})
+	//if err != nil {
+	//	return
+	//}
+	//
+	//fmt.Println(resp)
+	//fmt.Println(resp.Id)
+
+	resp, err := client.DeleteUser(context.Background(), &pb.DeleteUserRequest{Id: 5})
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 
 	fmt.Println(resp)
-	fmt.Println(resp.Id)
 }

@@ -36,8 +36,9 @@ func (r *AuthPostgres) GetUsers() ([]entity.User, error) {
 	return users, err
 }
 
-func (r *AuthPostgres) DeleteUser(userId int) error {
-	query := fmt.Sprintf("fd")
-	_, err := r.db.Exec(query, userId, userId)
+func (r *AuthPostgres) DeleteUser(userId dto.UserId) error {
+	query := fmt.Sprintf("DELETE FROM %s u WHERE u.id = $1", usersTable)
+	_, err := r.db.Exec(query, userId.Id)
+
 	return err
 }

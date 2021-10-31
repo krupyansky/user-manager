@@ -16,3 +16,7 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 func (s *AuthService) CreateUser(userProfile dto.UserProfile) (int, error) {
 	return s.repo.CreateUser(userProfile)
 }
+
+func (s *AuthService) DeleteUser(userId dto.UserId) error {
+	return s.repo.DeleteUser(userId)
+}
