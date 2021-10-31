@@ -9,17 +9,22 @@ import (
 	"log"
 )
 
-func (h *Handler) GetUsers(ctx context.Context, req *empty.Empty) (*pb.GetUsersResponse, error) {
+func (h *Handler) GetUsers(_ context.Context, _ *empty.Empty) (*pb.GetUsersResponse, error) {
+	users, err := h.services.Authorization.GetUsers()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	var response pb.GetUsersResponse
 
-	var user pb.User
-	user.Id = 1
-	user.Name = "Slava"
-	user.Email = "mail@mail.ru"
-
-	users := append(response.Users, &user)
-
-	response = pb.GetUsersResponse{Users: users}
+	for _, user := range users {
+		u := pb.User{
+			Id:    int32(user.Id),
+			Name:  user.Name,
+			Email: user.Email,
+		}
+		response.Users = append(response.Users, &u)
+	}
 
 	return &response, nil
 }

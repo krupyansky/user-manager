@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/krupyansky/user-manager/internal/dto"
+	"github.com/krupyansky/user-manager/internal/entity"
 	"github.com/krupyansky/user-manager/internal/repository"
 )
 
@@ -19,4 +20,8 @@ func (s *AuthService) CreateUser(userProfile dto.UserProfile) (int, error) {
 
 func (s *AuthService) DeleteUser(userId dto.UserId) error {
 	return s.repo.DeleteUser(userId)
+}
+
+func (s *AuthService) GetUsers() ([]entity.User, error) {
+	return s.repo.GetUsers()
 }
