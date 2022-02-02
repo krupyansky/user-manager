@@ -13,7 +13,7 @@ import (
 )
 
 func (h *Handler) GetUsers(_ context.Context, _ *empty.Empty) (*pb.GetUsersResponse, error) {
-	users, err := h.services.Authorization.GetUsers()
+	users, err := h.services.User.GetUsers()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -38,7 +38,7 @@ func (h *Handler) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*p
 		Email: req.Email,
 	}
 
-	id, _ := h.services.Authorization.CreateUser(command)
+	id, _ := h.services.User.CreateUser(command)
 
 	w := kafka.Writer{Topic: queue.Topic, Addr: kafka.TCP(queue.BrokerAddress)}
 
@@ -56,7 +56,7 @@ func (h *Handler) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*p
 func (h *Handler) DeleteUser(_ context.Context, req *pb.DeleteUserRequest) (*empty.Empty, error) {
 	command := dto.UserId{Id: int(req.Id)}
 
-	err := h.services.Authorization.DeleteUser(command)
+	err := h.services.User.DeleteUser(command)
 	if err != nil {
 		log.Fatalln(err)
 	}

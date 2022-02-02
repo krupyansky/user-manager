@@ -6,18 +6,18 @@ import (
 	"github.com/krupyansky/user-manager/internal/repository"
 )
 
-type Authorization interface {
+type User interface {
 	CreateUser(userProfile dto.UserProfile) (int, error)
 	DeleteUser(userId dto.UserId) error
 	GetUsers() ([]entity.User, error)
 }
 
 type Service struct {
-	Authorization
+	User
 }
 
 func NewService(repos *repository.Repository, reposRedis *repository.Redis) *Service {
 	return &Service{
-		Authorization: NewAuthService(repos.User, reposRedis.UsersRedis),
+		User: NewUserService(repos.User, reposRedis.UsersRedis),
 	}
 }

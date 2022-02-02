@@ -15,3 +15,8 @@ redis:
 clickHouse:
   host: "localhost"
   port: "8123"
+
+kafka:
+  host: "localhost"
+  port: "9092"
+  topic: "create-user-log"

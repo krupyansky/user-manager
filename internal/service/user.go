@@ -6,24 +6,24 @@ import (
 	"github.com/krupyansky/user-manager/internal/repository"
 )
 
-type AuthService struct {
+type UserService struct {
 	repo      repository.User
 	repoRedis repository.UsersRedis
 }
 
-func NewAuthService(repo repository.User, repoRedis repository.UsersRedis) *AuthService {
-	return &AuthService{repo: repo, repoRedis: repoRedis}
+func NewUserService(repo repository.User, repoRedis repository.UsersRedis) *UserService {
+	return &UserService{repo: repo, repoRedis: repoRedis}
 }
 
-func (s *AuthService) CreateUser(userProfile dto.UserProfile) (int, error) {
+func (s *UserService) CreateUser(userProfile dto.UserProfile) (int, error) {
 	return s.repo.CreateUser(userProfile)
 }
 
-func (s *AuthService) DeleteUser(userId dto.UserId) error {
+func (s *UserService) DeleteUser(userId dto.UserId) error {
 	return s.repo.DeleteUser(userId)
 }
 
-func (s *AuthService) GetUsers() ([]entity.User, error) {
+func (s *UserService) GetUsers() ([]entity.User, error) {
 	users := s.repoRedis.GetUsers()
 	if users != nil {
 		return users, nil

@@ -5,10 +5,6 @@ import (
 	"github.com/roistat/go-clickhouse"
 )
 
-const (
-	logsTable = "logs"
-)
-
 type ConfigClickHouse struct {
 	Host string
 	Port string
