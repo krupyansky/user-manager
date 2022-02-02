@@ -44,10 +44,10 @@ func (h *Handler) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*p
 
 	err := w.WriteMessages(ctx, kafka.Message{
 		Key:   []byte(strconv.Itoa(id)),
-		Value: []byte("this is message:" + req.Name + " " + req.Email),
+		Value: []byte("this is message: " + req.Name + " " + req.Email),
 	})
 	if err != nil {
-		panic("could not write message " + err.Error())
+		return nil, err
 	}
 
 	return &pb.CreateUserResponse{Id: int32(id)}, nil

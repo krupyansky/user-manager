@@ -12,7 +12,7 @@ docker-build:
 docker-up:
 	docker-compose up -d
 
-app-init: run migrate-up migrate-up-ch
+app-init: migrate-up migrate-up-ch run
 
 generate:
 	protoc --go_out=. --go-grpc_out=. api/user.proto
