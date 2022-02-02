@@ -1,4 +1,4 @@
-# user-manager
+# User Manager
 
 Тестовое задание
 1. Описать proto файл с сервисом из 3 методов: добавить пользователя, удалить пользователя, список пользователей
@@ -8,12 +8,8 @@
 5. При добавлении пользователя делать лог в ClickHouse
 6. Добавление логов в ClickHouse делать через очередь Kafka
 
-# Поднять postgres:
-~~~
-docker run --name=user-manager -e POSTGRES_PASSWORD='qwerty' -p 5436:5432 -d --rm postgres
-~~~
+# Запуск
 
-# Поднять redis
-~~~
-docker run --name user-manager-redis -p '6377:6379' -d redis
-~~~
+1. В одном терминале запустить команду для поднятия сервиса:
+`make init`
+2. В другом для поднятия клиента: `go run client/client.go`

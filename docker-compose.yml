@@ -20,7 +20,7 @@ services:
     depends_on:
       - zookeeper
 
-  server:
+  clickhouse-server:
     image: yandex/clickhouse-server
     ports:
       - "8123:8123"
@@ -32,6 +32,23 @@ services:
         soft: 262144
         hard: 262144
 
-  client:
+  clickhouse-client:
     image: yandex/clickhouse-client
     command: [ '--host', 'server' ]
+
+  database:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    ports:
+      - "5436:5432"
+    volumes:
+      - ./data/db/postgres:/var/lib/postgresql/data/
+
+  redis:
+    image: "redis:alpine"
+    command: [ "redis-server", "--save", "''" ]
+    restart: always
+    ports:
+      - "6377:6379"
