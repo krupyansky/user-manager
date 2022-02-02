@@ -34,3 +34,4 @@ migrate-create:
 
 migrate-create-ch:
 	migrate create -ext sql -dir ./schema-ch -seq init
+

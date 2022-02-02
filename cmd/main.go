@@ -77,7 +77,7 @@ func main() {
 
 	pb.RegisterUserApiServer(grpcServer, handlers)
 
-	log.Println("Starting server")
+	log.Println("Starting server...")
 	grpcServer.Serve(listener)
 }
 

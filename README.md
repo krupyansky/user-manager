@@ -15,3 +15,4 @@
 `make init`
 2. В другом для поднятия клиента: `go run client/client.go`
 3. Готово!
+
